@@ -19,10 +19,81 @@
     <section class="main-content">
       <h3>
 <a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h3>
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here <a href="https://guides.github.com/features/mastering-markdown/">using GitHub Flavored Markdown</a>, select a template crafted by a designer, and publish. After your page is generated, you can check out the new <code>gh-pages</code> branch locally. If you’re using GitHub Desktop, simply sync your repository and you’ll see the new branch.</p>
+<p>We will create a vehicle inventory management system to support front-end clients' needs which include the following use-cases :</p>
+<ol>
+<li>Dealership web site support for viewing data related to vehicle inventory via an existing CMS application.</li>
+<li>Updating inventory data via an existing admin app.</li>
+</ol>
 <h3>
 <a id="assumptions" class="anchor" href="#assumptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Assumptions</h3>
-<p>We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.</p>
+<p>Environment
+We have production and non-production aws accounts with full access in the non-prod accounts to create, modify, and deliver our solution.</p>
+<p>Team Experience
+We have a team of developers that are familiar with</p>
+<ol>
+<li>fluent in cicd tooling (terraform, codebuild, roles and policies, proper tagging, and Cloudwatch monitoring/alerting.</li>
+<li>fluent in the following languages: Python and NodeJS</li>
+</ol>
+<p>Data</p>
+<ol>
+<li>
+<p>Each payload (file) represents ALL the inventory for an individual dealer.</p>
+</li>
+<li>
+<p>Dealers are allowed only one feed per 24 hours period.</p>
+</li>
+<li>
+<p>The dealer id is embedded in the filename, adhering to pre-defined naming conventions.</p>
+</li>
+<li>
+<p>Dealers have been vetted and are managed in separate systems.  Access to dealer contact info is available to our solution.</p>
+</li>
+<li>
+<p>If a dealer id is not valid, the system will discard the feed for that "unknown" dealer.</p>
+</li>
+<li>
+<p>Industry standards exist to define appropriate values for vehicle properties based on OEM build specs.</p>
+</li>
+<li>
+<p>Inventory feeds are received nightly in a csv format.</p>
+</li>
+<li>
+<p>The processing and syndication of feeds does not take longer than a 24 hour window.</p>
+</li>
+<li>
+<p>Feeds taking longer then the predefined window shall be treated as stale and appropriate notifications shall be sent.</p>
+</li>
+<li>
+<p>The processing and syndication of feeds will not negatively effect client application performance.</p>
+</li>
+<li>
+<p>The order in which payloads are received is not significant.</p>
+</li>
+<li>
+<p>Redundant feeds do not cause adverse effects to overall inventory.  (updating inventory should be idempotent)</p>
+</li>
+<li>
+<p>Sourced inventory data should be scrubbed and validated, setting aside invalid payloads and notifying the authors of such payloads.
+a.  Validation Rules  (all fields are REQUIRED)
+i.  Year -&gt; 4 digit valid year (Years may include future)
+ii. Make -&gt; industry standard values and abbreviations
+iii.  Model -&gt; industry standard values and abbreviations
+iv.  BodyStyle -&gt; industry standard values and abbreviations
+v.  vin -&gt;  must be a valid vin (leverage existing vin validation routines)
+vi.  color -&gt;  as defined by the oem
+vii. mileage -&gt; round up to whole number
+viii.  msrp -&gt;  with 2 digits after decimal point
+ix.  asking_price -&gt;  with 2 digits after decimal point</p>
+</li>
+</ol>
+<p>Inventory Management API
+Client applications will access inventory data via a published api leveraging GraphQL.
+Why GraphQL over REST?<br>
+GraphQL appears to best-fit for the existing client applications and use-cases.  Clients retrieve exactly what they need and no more.  This is done through pre-defined contracts depicting all the available data the client will have access to.<br>
+In addition, the number of requests is mitigated because the backend will pull from any number of tables to build and tailor the response.</p>
+<p>Audience and Traffic
+Peak hours for client activity occurs during standard business hours (8am to 7pm EST).
+Sourced inventory data should be validated, setting aside invalid payloads and notifying the authors of such payloads. This requires "saving" the invalid payloads "as-is" for further investigative actions.</p>
 <h3>
 <a id="considerations" class="anchor" href="#considerations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Considerations</h3>
 <p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
