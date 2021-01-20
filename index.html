@@ -25,55 +25,33 @@
 <li>Updating inventory data via an existing admin app.</li>
 </ol>
 <h3>
-<a id="assumptions" class="anchor" href="#assumptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Assumptions</h3>
-<p>Environment
+<a id="considerations-and-assumptions" class="anchor" href="#considerations-and-assumptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Considerations and Assumptions</h3>
+<p>####Environment
 We have production and non-production aws accounts with full access in the non-prod accounts to create, modify, and deliver our solution.</p>
-<p>Team Experience
-We have a team of developers that are familiar with</p>
+<p>####Team Experience
+We have a team of developers that have sufficient AWS rights and are familiar with</p>
 <ol>
-<li>fluent in cicd tooling (terraform, codebuild, roles and policies, proper tagging, and Cloudwatch monitoring/alerting.</li>
-<li>fluent in the following languages: Python and NodeJS</li>
+<li>cicd tooling (terraform, codebuild, roles and policies, proper tagging, and Cloudwatch monitoring/alerting.</li>
+<li>languages: Java, Python and NodeJS</li>
+<li>database design and implementation: DynamoDB</li>
 </ol>
-<p>Data</p>
+<p>####The Data</p>
 <ol>
-<li>
-<p>Each payload (file) represents ALL the inventory for an individual dealer.</p>
-</li>
-<li>
-<p>Dealers are allowed only one feed per 24 hours period.</p>
-</li>
-<li>
-<p>The dealer id is embedded in the filename, adhering to pre-defined naming conventions.</p>
-</li>
-<li>
-<p>Dealers have been vetted and are managed in separate systems.  Access to dealer contact info is available to our solution.</p>
-</li>
-<li>
-<p>If a dealer id is not valid, the system will discard the feed for that "unknown" dealer.</p>
-</li>
-<li>
-<p>Industry standards exist to define appropriate values for vehicle properties based on OEM build specs.</p>
-</li>
-<li>
-<p>Inventory feeds are received nightly in a csv format.</p>
-</li>
-<li>
-<p>The processing and syndication of feeds does not take longer than a 24 hour window.</p>
-</li>
-<li>
-<p>Feeds taking longer then the predefined window shall be treated as stale and appropriate notifications shall be sent.</p>
-</li>
-<li>
-<p>The processing and syndication of feeds will not negatively effect client application performance.</p>
-</li>
-<li>
-<p>The order in which payloads are received is not significant.</p>
-</li>
-<li>
-<p>Redundant feeds do not cause adverse effects to overall inventory.  (updating inventory should be idempotent)</p>
-</li>
-<li>
-<p>Sourced inventory data should be scrubbed and validated, setting aside invalid payloads and notifying the authors of such payloads.
+<li>Each payload (file) represents ALL the inventory for an individual dealer.</li>
+<li>There is no limit to the number of vehicles that can appear in a payload.</li>
+<li>Dealers are allowed to send any number of feeds during the nightly window. (emergency updates, etc)</li>
+<li>The dealer identifier is embedded in the filename, adhering to pre-defined naming conventions.</li>
+<li>We will NOT store personal info or any data requiring privacy.</li>
+<li>Dealers have already been vetted and are managed in a separate solution.  Access to dealer contact info is available to our solution.</li>
+<li>If a payload's dealer id is not valid, the system will discard the feed for that "unknown" dealer.</li>
+<li>Industry standards exist to define appropriate values for vehicle properties based on OEM build specs.</li>
+<li>Inventory feeds are received nightly in a csv format.</li>
+<li>The processing and syndication of feeds does not take longer than a 24 hour window.</li>
+<li>Feeds taking longer then the predefined window shall be treated as stale and appropriate notifications shall be sent.</li>
+<li>The processing and syndication of feeds will not negatively effect existing client application performance.</li>
+<li>Feeds are handled in the order in which they are received, based on timestamp.</li>
+<li>Redundant feeds do not cause adverse effects to overall inventory.  (updating inventory should be idempotent)</li>
+<li>Sourced inventory data should be scrubbed and validated, setting aside invalid payloads and notifying the authors of such payloads.
 a.  Validation Rules  (all fields are REQUIRED)
 i.  Year -&gt; 4 digit valid year (Years may include future)
 ii. Make -&gt; industry standard values and abbreviations
@@ -83,17 +61,19 @@ v.  vin -&gt;  must be a valid vin (leverage existing vin validation routines)
 vi.  color -&gt;  as defined by the oem
 vii. mileage -&gt; round up to whole number
 viii.  msrp -&gt;  with 2 digits after decimal point
-ix.  asking_price -&gt;  with 2 digits after decimal point</p>
-</li>
+ix.  asking_price -&gt;  with 2 digits after decimal point</li>
+<li>DynamoDB will be the source of truth for our inventory data.  Our data schema is simple and a good fit for DynamoDB, which can handle more 10 trillion requests per day and more than 20 million requests per second.</li>
+<li>Future use-cases for inventory data are unknown at this time.  We will provide opportunities for future solutions to receive the feeds as they come in, via DynamoDB streams or JMS topics.  The payloads themselves are immutable (preserving the paper trail).</li>
 </ol>
-<p>Inventory Management API
-Client applications will access inventory data via a published api leveraging GraphQL.
-Why GraphQL over REST?<br>
-GraphQL appears to best-fit for the existing client applications and use-cases.  Clients retrieve exactly what they need and no more.  This is done through pre-defined contracts depicting all the available data the client will have access to.<br>
-In addition, the number of requests is mitigated because the backend will pull from any number of tables to build and tailor the response.</p>
-<p>Audience and Traffic
+<p>##Inventory Management API
+Api documentation and helpful guides are published via a github readme (or github static pages site) and kept up-to-date as the solution evolves.
+Client application use cases are captured in GraphQL API contracts, providing predictable data shaping for the client.
+The client does NOT need to know what resources are aggregated on the backend to satisfy front-end requests.<br>
+Client-side pre-request validation is exercised, with backend validation present in the future event that we gain additional clients.<br>
+Standard HTTP Responses and (Successful and Error) are supported in all calls to the api. Response status and messaging is fully described in the api documentation.</p>
+<p>##Audience and Traffic
 Peak hours for client activity occurs during standard business hours (8am to 7pm EST).
-Sourced inventory data should be validated, setting aside invalid payloads and notifying the authors of such payloads. This requires "saving" the invalid payloads "as-is" for further investigative actions.</p>
+Audience consist of dealership website user activity and Inventory Management application activity.</p>
 <h3>
 <a id="considerations" class="anchor" href="#considerations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Considerations</h3>
 <p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
