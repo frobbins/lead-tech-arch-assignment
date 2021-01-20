@@ -85,6 +85,7 @@
 <th>Data Type</th>
 <th>Required</th>
 <th>Example Value</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
@@ -93,19 +94,66 @@
 <td>Integer</td>
 <td>Yes</td>
 <td>2021</td>
+<td>future years are valid</td>
+</tr>
+<tr>
+<td>MAKE</td>
+<td>String</td>
+<td>Yes</td>
+<td>FORD</td>
+<td>oem defined</td>
+</tr>
+<tr>
+<td>MODEL</td>
+<td>String</td>
+<td>Yes</td>
+<td>BRONCO</td>
+<td>oem defined</td>
+</tr>
+<tr>
+<td>BODY_STYLE</td>
+<td>String</td>
+<td>Yes</td>
+<td>TRL</td>
+<td>oem defined</td>
+</tr>
+<tr>
+<td>VIN</td>
+<td>String</td>
+<td>Yes</td>
+<td>HDU874839483UJU76</td>
+<td>17 characters</td>
+</tr>
+<tr>
+<td>COLOR</td>
+<td>String</td>
+<td>Yes</td>
+<td>RED</td>
+<td>oem defined</td>
+</tr>
+<tr>
+<td>MILEAGE</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>30000</td>
+<td>round up</td>
+</tr>
+<tr>
+<td>MSRP</td>
+<td>BigDecimal</td>
+<td>Yes</td>
+<td>45000.34</td>
+<td>2 places of precision</td>
+</tr>
+<tr>
+<td>ASKING_PRICE</td>
+<td>BigDecimal</td>
+<td>Yes</td>
+<td>45000.00</td>
+<td>2 places of precision</td>
 </tr>
 </tbody>
 </table>
-<p>a.  Validation Rules  (all fields are REQUIRED)
-i.  Year -&gt; 4 digit valid year (Years may include future)
-ii. Make -&gt; industry standard values and abbreviations
-iii.  Model -&gt; industry standard values and abbreviations
-iv.  BodyStyle -&gt; industry standard values and abbreviations
-v.  vin -&gt;  must be a valid vin (leverage existing vin validation routines)
-vi.  color -&gt;  as defined by the oem
-vii. mileage -&gt; round up to whole number
-viii.  msrp -&gt;  with 2 digits after decimal point
-ix.  asking_price -&gt;  with 2 digits after decimal point</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://ghe.coxautoinc.com/George-robbins/Tech-Arch-Design-Project">Vehicle Inventory Management - A Technical Design Document </a> is maintained by <a href="https://ghe.coxautoinc.com/George-robbins">George-robbins</a>.</span>
