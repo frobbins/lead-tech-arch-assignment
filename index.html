@@ -26,23 +26,33 @@
 </ol>
 <h3>
 <a id="considerations-and-assumptions" class="anchor" href="#considerations-and-assumptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Considerations and Assumptions</h3>
-<p>####Environment
-We have production and non-production aws accounts with full access in the non-prod accounts to create, modify, and deliver our solution.</p>
-<p>####Team Experience
-We have a team of developers that have sufficient AWS rights and are familiar with</p>
+<h4>
+<a id="environment" class="anchor" href="#environment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Environment</h4>
+<p>We have production and non-production aws accounts with full access in the non-prod accounts to create, modify, and deliver our solution.</p>
+<h4>
+<a id="team-experience" class="anchor" href="#team-experience" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Team Experience</h4>
+<p>We have a team of developers that have sufficient AWS rights and are familiar with</p>
 <ol>
 <li>cicd tooling (terraform, codebuild, roles and policies, proper tagging, and Cloudwatch monitoring/alerting.</li>
 <li>languages: Java, Python and NodeJS</li>
 <li>database design and implementation: DynamoDB</li>
 </ol>
-<p>####The Data</p>
+<h4>
+<a id="audience-and-traffic" class="anchor" href="#audience-and-traffic" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Audience and Traffic</h4>
 <ol>
+<li>Peak hours for client activity occurs during standard business hours (8am to 7pm EST).</li>
+<li>Audience consist of dealership website user activity and Inventory Management application activity.</li>
+</ol>
+<h4>
+<a id="the-data" class="anchor" href="#the-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Data</h4>
+<ol>
+<li>Dealers have already been vetted and are managed in a separate solution.  Access to dealer contact info is available to our solution.</li>
 <li>Each payload (file) represents ALL the inventory for an individual dealer.</li>
+<li>The payloads themselves are immutable (preserving the paper trail).</li>
 <li>There is no limit to the number of vehicles that can appear in a payload.</li>
 <li>Dealers are allowed to send any number of feeds during the nightly window. (emergency updates, etc)</li>
 <li>The dealer identifier is embedded in the filename, adhering to pre-defined naming conventions.</li>
 <li>We will NOT store personal info or any data requiring privacy.</li>
-<li>Dealers have already been vetted and are managed in a separate solution.  Access to dealer contact info is available to our solution.</li>
 <li>If a payload's dealer id is not valid, the system will discard the feed for that "unknown" dealer.</li>
 <li>Industry standards exist to define appropriate values for vehicle properties based on OEM build specs.</li>
 <li>Inventory feeds are received nightly in a csv format.</li>
@@ -51,8 +61,42 @@ We have a team of developers that have sufficient AWS rights and are familiar wi
 <li>The processing and syndication of feeds will not negatively effect existing client application performance.</li>
 <li>Feeds are handled in the order in which they are received, based on timestamp.</li>
 <li>Redundant feeds do not cause adverse effects to overall inventory.  (updating inventory should be idempotent)</li>
-<li>Sourced inventory data should be scrubbed and validated, setting aside invalid payloads and notifying the authors of such payloads.
-a.  Validation Rules  (all fields are REQUIRED)
+<li>Sourced inventory data should be scrubbed and validated, setting aside invalid payloads and notifying the authors of such payloads.</li>
+<li>DynamoDB will be the source of truth for our inventory data.  Our data schema is simple and a good fit for DynamoDB, which can handle more 10 trillion requests per day and more than 20 million requests per second.</li>
+<li>Future use-cases for inventory data are unknown at this time.  We will provide opportunities for future solutions to receive the feeds as they come in, via DynamoDB streams or JMS topics.</li>
+</ol>
+<h4>
+<a id="inventory-management-api" class="anchor" href="#inventory-management-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Inventory Management API</h4>
+<ol>
+<li>Api documentation and helpful guides are published via a github readme (or github static pages site) and kept up-to-date as the solution evolves.</li>
+<li>Client application use cases are captured in GraphQL API contracts, providing predictable data shaping for the client.</li>
+<li>Client-side pre-request validation is exercised, with backend validation present in the future event that we gain additional clients.</li>
+<li>Standard HTTP Responses and (Successful and Error) are supported in all calls to the api. Response status and messaging is fully described in the api documentation.</li>
+</ol>
+<h3>
+<a id="lets-get-started" class="anchor" href="#lets-get-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Lets get started!</h3>
+<h4>
+<a id="inventory-processing" class="anchor" href="#inventory-processing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Inventory processing</h4>
+<p>Stand up the DynamoDB table with the pre-defined fields.</p>
+<table>
+<thead>
+<tr>
+<th>Column Name</th>
+<th>Data Type</th>
+<th>Required</th>
+<th>Example Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YEAR</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>2021</td>
+</tr>
+</tbody>
+</table>
+<p>a.  Validation Rules  (all fields are REQUIRED)
 i.  Year -&gt; 4 digit valid year (Years may include future)
 ii. Make -&gt; industry standard values and abbreviations
 iii.  Model -&gt; industry standard values and abbreviations
@@ -61,28 +105,7 @@ v.  vin -&gt;  must be a valid vin (leverage existing vin validation routines)
 vi.  color -&gt;  as defined by the oem
 vii. mileage -&gt; round up to whole number
 viii.  msrp -&gt;  with 2 digits after decimal point
-ix.  asking_price -&gt;  with 2 digits after decimal point</li>
-<li>DynamoDB will be the source of truth for our inventory data.  Our data schema is simple and a good fit for DynamoDB, which can handle more 10 trillion requests per day and more than 20 million requests per second.</li>
-<li>Future use-cases for inventory data are unknown at this time.  We will provide opportunities for future solutions to receive the feeds as they come in, via DynamoDB streams or JMS topics.  The payloads themselves are immutable (preserving the paper trail).</li>
-</ol>
-<p>##Inventory Management API
-Api documentation and helpful guides are published via a github readme (or github static pages site) and kept up-to-date as the solution evolves.
-Client application use cases are captured in GraphQL API contracts, providing predictable data shaping for the client.
-The client does NOT need to know what resources are aggregated on the backend to satisfy front-end requests.<br>
-Client-side pre-request validation is exercised, with backend validation present in the future event that we gain additional clients.<br>
-Standard HTTP Responses and (Successful and Error) are supported in all calls to the api. Response status and messaging is fully described in the api documentation.</p>
-<p>##Audience and Traffic
-Peak hours for client activity occurs during standard business hours (8am to 7pm EST).
-Audience consist of dealership website user activity and Inventory Management application activity.</p>
-<h3>
-<a id="considerations" class="anchor" href="#considerations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Considerations</h3>
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-<h3>
-<a id="inventory-feeds-and-dataload" class="anchor" href="#inventory-feeds-and-dataload" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Inventory Feeds and Dataload</h3>
-<p>You can @mention a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (@defunkt), PJ Hyett (@pjhyett), and Tom Preston-Werner (@mojombo) founded GitHub.</p>
-<h3>
-<a id="inventory-management-api" class="anchor" href="#inventory-management-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Inventory Management API</h3>
-<p>Having trouble with Pages? Check out our <a href="https://help.github.com/pages">documentation</a> or <a href="https://github.com/contact">contact support</a> and we’ll help you sort it out.</p>
+ix.  asking_price -&gt;  with 2 digits after decimal point</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://ghe.coxautoinc.com/George-robbins/Tech-Arch-Design-Project">Vehicle Inventory Management - A Technical Design Document </a> is maintained by <a href="https://ghe.coxautoinc.com/George-robbins">George-robbins</a>.</span>
