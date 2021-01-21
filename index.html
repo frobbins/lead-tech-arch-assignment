@@ -36,6 +36,7 @@
 <li>cicd tooling (terraform, codebuild, roles and policies, proper tagging, and Cloudwatch monitoring/alerting.</li>
 <li>languages: Java, Python and NodeJS</li>
 <li>database design and implementation: DynamoDB</li>
+<li>microservice implementations leveraging Java/SpringBoot/Maven/Docker</li>
 </ol>
 <h4>
 <a id="audience-and-traffic" class="anchor" href="#audience-and-traffic" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Audience and Traffic</h4>
@@ -62,8 +63,8 @@
 <li>Feeds are handled in the order in which they are received, based on timestamp.</li>
 <li>Redundant feeds do not cause adverse effects to overall inventory.  (updating inventory should be idempotent)</li>
 <li>Sourced inventory data should be scrubbed and validated, setting aside invalid payloads and notifying the authors of such payloads.</li>
-<li>DynamoDB will be the source of truth for our inventory data.  Our data schema is simple and a good fit for DynamoDB, which can handle more 10 trillion requests per day and more than 20 million requests per second.</li>
-<li>Future use-cases for inventory data are unknown at this time.  We will provide opportunities for future solutions to receive the feeds as they come in, via DynamoDB streams or JMS topics.</li>
+<li>DynamoDB will be the source of truth for our inventory data.</li>
+<li>Authors of updates to the Inventory data (pricing, etc) are not captured by the system.</li>
 </ol>
 <h4>
 <a id="inventory-management-api" class="anchor" href="#inventory-management-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Inventory Management API</h4>
@@ -89,6 +90,13 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>DEALER_ID</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>123444</td>
+<td>predefined value</td>
+</tr>
 <tr>
 <td>YEAR</td>
 <td>Integer</td>
@@ -152,8 +160,61 @@
 <td>45000.00</td>
 <td>2 places of precision</td>
 </tr>
+<tr>
+<td>LAST_UPDATE</td>
+<td>String</td>
+<td>Yes</td>
+<td>2015-12-21T17:42:34Z</td>
+<td>dynamoDB does not support TimeStamp</td>
+</tr>
 </tbody>
 </table>
+<h3>
+<a id="technology-selection-considerations" class="anchor" href="#technology-selection-considerations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Technology Selection Considerations</h3>
+<h4>
+<a id="dynamodb" class="anchor" href="#dynamodb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>DynamoDB:</h4>
+<ul>
+<li>AWS-Java APIs exist</li>
+<li>
+<blockquote>
+<p>10 trillion requests per day</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>20 million requests per second</p>
+</blockquote>
+</li>
+</ul>
+<h4>
+<a id="sqs" class="anchor" href="#sqs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SQS:</h4>
+<ul>
+<li>FIFO queuing</li>
+<li>Built-in throttling</li>
+<li>Durable</li>
+</ul>
+<h4>
+<a id="claim-ticket-pattern" class="anchor" href="#claim-ticket-pattern" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Claim Ticket Pattern</h4>
+<ul>
+<li>Mitigates large payload sizes.</li>
+<li>SQS message size limitations exist.</li>
+</ul>
+<h4>
+<a id="stepfunctions" class="anchor" href="#stepfunctions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>StepFunctions</h4>
+<ul>
+<li>Orchestration for today's requirements.</li>
+<li>Flexibility for future requirements (just plug in the new stage)</li>
+<li>Supports throttling and retries for any defined task.</li>
+<li>Lambda tasks can be implemented in our chosen language.</li>
+</ul>
+<h4>
+<a id="springboot-microservice" class="anchor" href="#springboot-microservice" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SpringBoot Microservice</h4>
+<ul>
+<li>Team experience</li>
+<li>Performance</li>
+<li>Existing Maven archetypes exist for generating boiler-plate scaffolding.</li>
+<li>Large support community.</li>
+</ul>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://ghe.coxautoinc.com/George-robbins/Tech-Arch-Design-Project">Vehicle Inventory Management - A Technical Design Document </a> is maintained by <a href="https://ghe.coxautoinc.com/George-robbins">George-robbins</a>.</span>
