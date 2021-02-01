@@ -17,7 +17,26 @@
     </section>
 
     <section class="main-content">
-      <h3>
+      <h4>
+<a id="assignment-architectural-design-exercise" class="anchor" href="#assignment-architectural-design-exercise" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Assignment: Architectural Design Exercise</h4>
+<p>Create an architectural design document to guide a team in the implementation of a
+vehicle inventory management system for a dealership website provider. This document should go into sufficient detail to allow a team to implement the system, with lower-level details to be handled via iteration between team and architect. At a minimum, this should
+include a diagram showing the system’s components, a description and justification for technology (and paradigm) selection, and a discussion of considerations for nonfunctional requirements (performance, availability, degradation, etc).
+Existing components:</p>
+<ul>
+<li>An existing content management system that will integrate with the inventory management system to display vehicle inventory on websites.</li>
+<li>An existing set of vehicle inventory feeds coming from dealerships in a nightly</li>
+<li>batch. The feeds are in CSV format with the following fields:</li>
+<li>
+<blockquote>
+<p>Year, make, model, bodystyle, vin, color, mileage, msrp, asking_price</p>
+</blockquote>
+</li>
+<li>An existing application for the management of the website solution. This will need
+to be modified to support, at a minimum, setting an “Internet Price” for each
+vehicle.</li>
+</ul>
+<h3>
 <a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h3>
 <p>We will create a vehicle inventory management system to support front-end clients' needs which include the following use-cases :</p>
 <ol>
