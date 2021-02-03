@@ -1,4 +1,4 @@
-#### Assignment: Architectural Design Exercise
+### Assignment: Architectural Design Exercise
 Create an architectural design document to guide a team in the implementation of a
 vehicle inventory management system for a dealership website provider. This document should go into sufficient detail to allow a team to implement the system, with lower-level details to be handled via iteration between team and architect. At a minimum, this should
 include a diagram showing the system’s components, a description and justification for technology (and paradigm) selection, and a discussion of considerations for nonfunctional requirements (performance, availability, degradation, etc).
@@ -10,6 +10,8 @@ Existing components:
 * An existing application for the management of the website solution. This will need
  to be modified to support, at a minimum, setting an “Internet Price” for each
  vehicle.
+ 
+## Solution
 
 ### Overview
 We will create a vehicle inventory management system to support front-end clients' needs which include the following use-cases : 
