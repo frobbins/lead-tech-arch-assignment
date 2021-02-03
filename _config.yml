@@ -1,0 +1,8 @@
+title: "Vehicle Inventory Management - A Technical Design Document "
+description: "Backend solution to support vehicle inventory maintenance. "
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
