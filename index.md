@@ -62,19 +62,19 @@ We have a team of developers that have sufficient AWS rights and are familiar wi
 ### Lets get started!
 #### Inventory processing
 Stand up the DynamoDB table with the pre-defined fields. 
-Column Name | Data Type | Required | Example Value  | Notes
------------ | --------- | -------- | -------------- | -----
-DEALER_ID | Integer | Yes | 123444 | predefined value
-YEAR | Integer | Yes | 2021 | future years are valid
-MAKE | String | Yes | FORD | oem defined
-MODEL | String | Yes | BRONCO | oem defined
-BODY_STYLE | String | Yes | TRL | oem defined
-VIN | String | Yes | HDU874839483UJU76 | 17 characters
-COLOR | String | Yes | RED | oem defined
-MILEAGE | Integer | Yes | 30000 | round up
-MSRP | BigDecimal | Yes | 45000.34 | 2 places of precision
-ASKING_PRICE | BigDecimal | Yes | 45000.00 | 2 places of precision
-LAST_UPDATE | String | Yes | 2015-12-21T17:42:34Z | dynamoDB does not support TimeStamp
+| Column Name | Data Type | Required | Example Value  | Notes |
+| :------------- | :-------------: | :-------------: | :-------------: | -------------: |
+| DEALER_ID | Integer | Yes | 123444 | predefined value |
+| YEAR | Integer | Yes | 2021 | future years are valid |
+| MAKE | String | Yes | FORD | oem defined |
+| MODEL | String | Yes | BRONCO | oem defined |
+| BODY_STYLE | String | Yes | TRL | oem defined |
+| VIN | String | Yes | HDU874839483UJU76 | 17 characters |
+| COLOR | String | Yes | RED | oem defined |
+| MILEAGE | Integer | Yes | 30000 | round up |
+| MSRP | BigDecimal | Yes | 45000.34 | 2 places of precision |
+| ASKING_PRICE | BigDecimal | Yes | 45000.00 | 2 places of precision |
+| LAST_UPDATE | String | Yes | 2015-12-21T17:42:34Z | dynamoDB does not support TimeStamp |
 
 Solution Design
 ![Technical Diagram](./Vehicle-Inventory-Management-Solution.jpeg)
