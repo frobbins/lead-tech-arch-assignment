@@ -64,7 +64,7 @@ We have a team of developers that have sufficient AWS rights and are familiar wi
 
 Stand up the DynamoDB table with the pre-defined fields. 
 
-![Technical Diagram](./db.jpeg)
+![Data Table](./db.jpg)
 
 ### Solution Design
 ![Technical Diagram](./Vehicle-Inventory-Management-Solution.jpeg)
