@@ -76,7 +76,7 @@ Stand up the DynamoDB table with the pre-defined fields.
 | ASKING_PRICE | BigDecimal | Yes | 45000.00 | 2 places of precision |
 | LAST_UPDATE | String | Yes | 2015-12-21T17:42:34Z | dynamoDB does not support TimeStamp |
 
-Solution Design
+### Solution Design
 ![Technical Diagram](./Vehicle-Inventory-Management-Solution.jpeg)
 
 ### Technology Selection Considerations
